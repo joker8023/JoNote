@@ -5,12 +5,38 @@ import Latestdoc from '../latest-doc/Latestdoc';
 import Link from "react-router-dom/es/Link";
 import Route from "react-router-dom/es/Route";
 import Redirect from "react-router-dom/es/Redirect";
+import axios from 'axios'
 
 const {SubMenu} = Menu;
 const {Header, Content, Footer, Sider} = Layout;
 
+
 class Mainland extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            folderlist: '',
+            loading: true
+        };
+    }
+    componentWillMount() {
+
+        getfolderinfo().then(data => {
+            this.setState(function (state,props) {
+                return {loading: false, data: data.message}
+            });
+        })
+    }
     render() {
+        const data = this.state.data
+        const folderlist = []
+        if (data){
+            console.log(data)
+            data.forEach(folderinfo =>{
+                let html = `<Menu.Item key="${folderinfo.ID+3}"><span><Icon type="folder"/>${folderinfo.Name}</span></Menu.Item> `
+                folderlist.push(html)
+            });
+        }
         return (
             <Layout className="layout" style={ { height:"100vh" } }>
                 <Header className="header">
@@ -34,16 +60,7 @@ class Mainland extends Component {
                                 </Menu.Item>
 
                                 <SubMenu key="sub3" title={<span><Icon type="folder-open"/>我的文件夹</span>}>
-                                    <Menu.Item key="9"><span><Icon type="folder"/>1</span></Menu.Item>
-                                    <Menu.Item key="10"><span><Icon type="folder"/>2</span></Menu.Item>
-                                    <Menu.Item key="11"><span><Icon type="folder"/>3</span></Menu.Item>
-                                    <Menu.Item key="12"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="13"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="14"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="15"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="16"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="17"><span><Icon type="folder"/>4</span></Menu.Item>
-                                    <Menu.Item key="18"><span><Icon type="folder"/>4</span></Menu.Item>
+                                    ${folderlist}
 
                                 </SubMenu>
                             </Menu>
@@ -62,6 +79,9 @@ class Mainland extends Component {
             </Layout>
         );
     }
+}
+function getfolderinfo() {
+    return axios.get('/folderinfo');
 }
 
 export default Mainland;

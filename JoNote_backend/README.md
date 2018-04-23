@@ -1,6 +1,6 @@
-JoNote
+JoNote_backend
 ================
-Front-end display page used react for JoNote
+API support  for JoNote
 
 
 Table of Contents
@@ -13,16 +13,15 @@ Requirements
 ------------
 requires the following to run:
 
-  * node
-  * npm
-  * JoNote_backend (./JoNote_backend)
+  * go
+  * gorm
+  * gin
 
 Usage
 -------
 
 ```
-cd JoNote
-npm install
-npm run start
+cd JoNote_backend
+go build server.go
 ```
 

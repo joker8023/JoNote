@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Mainland.css';
-import {Icon, Layout, Menu} from 'antd';
+import {Dropdown, Icon, Layout, Menu} from 'antd';
 import Latestdoc from '../latest-doc/Latestdoc';
 import Link from "react-router-dom/es/Link";
 import Route from "react-router-dom/es/Route";
@@ -15,28 +15,34 @@ class Mainland extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            folderlist: '',
+            folderlist: [],
             loading: true
         };
     }
     componentWillMount() {
-
         getfolderinfo().then(data => {
-            this.setState(function (state,props) {
-                return {loading: false, data: data.message}
-            });
+            this.setState({folderlist:data.data.message})
         })
     }
+
+
     render() {
-        const data = this.state.data
-        const folderlist = []
-        if (data){
-            console.log(data)
-            data.forEach(folderinfo =>{
-                let html = `<Menu.Item key="${folderinfo.ID+3}"><span><Icon type="folder"/>${folderinfo.Name}</span></Menu.Item> `
-                folderlist.push(html)
-            });
-        }
+        const menu = (
+            <Menu>
+                <SubMenu title="新建">
+                    <Menu.Item>笔记</Menu.Item>
+                    <Menu.Item>markdown</Menu.Item>
+                    <Menu.Item>文件夹</Menu.Item>
+                </SubMenu>
+                <SubMenu title="上传">
+                    <Menu.Item>文件</Menu.Item>
+                    <Menu.Item>文件夹</Menu.Item>
+                </SubMenu>
+                <Menu.Item>重命名</Menu.Item>
+                <Menu.Item>删除</Menu.Item>
+                <Menu.Item>分享</Menu.Item>
+            </Menu>
+        );
         return (
             <Layout className="layout" style={ { height:"100vh" } }>
                 <Header className="header">
@@ -60,9 +66,11 @@ class Mainland extends Component {
                                 </Menu.Item>
 
                                 <SubMenu key="sub3" title={<span><Icon type="folder-open"/>我的文件夹</span>}>
-                                    ${folderlist}
-
+                                    {
+                                        this.state.folderlist.map((item,i)=> <Menu.Item key={i+3}>  <Dropdown overlay={menu} trigger={['contextMenu']}><span><Icon type="folder"/>{item.Name}</span></Dropdown></Menu.Item>)
+                                        }
                                 </SubMenu>
+
                             </Menu>
                         </Sider>
                         <Content style={{padding: '0 24px', minHeight: 280,marginLeft:'200px'}}>
